@@ -1,0 +1,111 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "CLINK: reproducible, interactive cloud-based GWAS Quality Control",
+  "Parameters": {
+    "KeyName": {
+      "Description": "Key Pair name to use for instance access",
+      "Type": "AWS::EC2::KeyPair::KeyName",
+      "Default": "mykey"
+    },
+    "VPC": {
+      "Description": "Select VPC to use (or the default)",
+      "Type": "AWS::EC2::VPC::Id"
+    },
+    "Subnet": {
+      "Description": "Select subnet ID to use (or the default)",
+      "Type": "AWS::EC2::Subnet::Id"
+    },
+    "EmailAddy": {
+      "Description": "Email address to send CLINK notebook link to",
+      "Type": "String"
+    },
+    "ClinkInstanceType": {
+      "Description": "Instance type to use for EVE.",
+      "Type": "String",
+      "Default": "m4.xlarge",
+      "AllowedValues": ["m4.xlarge", "c4.xlarge", "c4.2xlarge", "c4.4xlarge"]
+    }
+  },
+  "Resources": {
+    "SecurityGroup": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupDescription": "Security group allowing ingress from all IPs via TCP on port 22 only, and port 8888 for Jupyter notebook.",
+        "VpcId": {"Ref": "VPC"},
+        "SecurityGroupIngress": [{
+          "CidrIp": "0.0.0.0/0",
+          "FromPort": 22,
+          "IpProtocol": "tcp",
+          "ToPort": 22
+        },
+	{
+	  "CidrIp": "0.0.0.0/0",
+	  "FromPort": 8888,
+	  "IpProtocol": "tcp",
+	  "ToPort": 8888
+	}]
+      }
+    },
+    "IamRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": ["ec2.amazonaws.com"]
+              },
+              "Action": ["sts:AssumeRole"]
+            }
+          ]
+        },
+        "Path": "/",
+        "Policies": [
+          {
+            "PolicyName": "ec2",
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [{
+                "Effect" : "Allow",
+                "Action" : ["ec2:DescribeVolumes", "ec2:CreateSnapshot", "ec2:DescribeSnapshots", "ec2:DeleteSnapshot"],
+                "Resource": "*"
+              }]
+            }
+          }
+        ]
+      }
+    },
+    "IamInstanceProfile": {
+      "Type": "AWS::IAM::InstanceProfile",
+      "Properties": {
+        "Path": "/",
+        "Roles": [{"Ref": "IamRole"}]
+      }
+    },
+    "ClinkServer": {
+      "Type": "AWS::EC2::Instance",
+      "Properties": {
+        "IamInstanceProfile": {"Ref": "IamInstanceProfile"},
+        "ImageId": "ami-b93648af",
+        "InstanceType": {"Ref": "ClinkInstanceType"},
+        "KeyName": {"Ref": "KeyName"},
+        "SecurityGroupIds": [{"Ref": "SecurityGroup"}],
+        "SubnetId": {"Ref": "Subnet"},
+	"UserData" : { "Fn::Base64" : { "Fn::Join" : [ "", [
+          "#!/bin/bash -v\n",
+	  "sudo openssl req -x509 -nodes -days 365 -newkey rsa:1024 -keyout /home/ec2-user/certs/clinknb.pem -out /home/ec2-user/certs/clinknb.pem -subj '/C=US/ST=PA/L=Philadelphia/O=NA/CN=upibi.org'\n",
+	  "cd /clink/\n",
+	  "git clone https://github.com/bryketos/CLINK.git\n",
+	  "/home/ec2-user/anaconda2/bin/jupyter notebook &\n",
+	  "sleep 15\n",
+	  "export IP=`wget -qO- http://instance-data/latest/meta-data/public-ipv4`\n",
+	  "/home/ec2-user/anaconda2/bin/jupyter notebook list | tail -1 | cut -d$' ' -f1 | perl -lpe 's/localhost/$ENV{IP}/' | mail -s 'Link to CLINK notebook' ",
+	  {"Ref": "EmailAddy"},
+	  "\n"
+        ]]}} 
+      }
+    }
+  }
+}
