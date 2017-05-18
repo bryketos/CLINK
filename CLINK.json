@@ -95,12 +95,13 @@
         "SubnetId": {"Ref": "Subnet"},
 	"UserData" : { "Fn::Base64" : { "Fn::Join" : [ "", [
           "#!/bin/bash -v\n",
-	  "sudo openssl req -x509 -nodes -days 365 -newkey rsa:1024 -keyout /home/ec2-user/certs/clinknb.pem -out /home/ec2-user/certs/clinknb.pem -subj '/C=US/ST=PA/L=Philadelphia/O=NA/CN=upibi.org'\n",
+	  "openssl req -x509 -nodes -days 365 -newkey rsa:1024 -keyout /home/ec2-user/certs/clinknb.pem -out /home/ec2-user/certs/clinknb.pem -subj '/C=US/ST=PA/L=Philadelphia/O=NA/CN=upibi.org'\n",
 	  "cd /clink/\n",
 	  "git clone https://github.com/bryketos/CLINK.git\n",
 	  "/home/ec2-user/anaconda2/bin/jupyter notebook &\n",
-	  "sleep 15\n",
+	  "sleep 45\n",
 	  "export IP=`wget -qO- http://instance-data/latest/meta-data/public-ipv4`\n",
+         "echo -e 'IP address is' $IP\n",
 	  "/home/ec2-user/anaconda2/bin/jupyter notebook list | tail -1 | cut -d$' ' -f1 | perl -lpe 's/localhost/$ENV{IP}/' | mail -s 'Link to CLINK notebook' ",
 	  {"Ref": "EmailAddy"},
 	  "\n"
