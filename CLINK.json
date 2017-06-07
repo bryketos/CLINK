@@ -20,7 +20,7 @@
       "Type": "String"
     },
     "ClinkInstanceType": {
-      "Description": "Instance type to use for EVE.",
+      "Description": "Instance type to use for CLINK.",
       "Type": "String",
       "Default": "m4.xlarge",
       "AllowedValues": ["m4.xlarge", "c4.xlarge", "c4.2xlarge", "c4.4xlarge"]
