@@ -22,7 +22,7 @@ This is free software BUT AWS RESOURCE UTILIZATION WILL BE BILLED TO YOUR ACCOUN
 6. Put in your email address.  A private link will be mailed here so DO NOT SHARE THIS LINK.
 7. Launch the stack.  All resources are automatically provisioned. You should see "CREATE COMPLETE" in green after about 2 minutes.
 8. There is a 90 second delay after the instance launches before it sends the email with the link - this is to boot the Jupyter server and clone in the notebook.
-9. Check your span folder for the email.
+9. Check your spam folder for the email.
 10. Click the link and you should get straight to the Jupyter menu. Click on the CLINK/ folder and launch the GWAS_QC_and_analysis notebook.
 11. Run the first cell, then in the second cell, add the name of your Plink filestem containing your GWAS data. Run this second cell to create the folder for your GWAS study.
 12. Open a terminal (or command prompt OR SSH program), then upload your data to the instance using the public IPv4 address of the instance which you can get from the AWS console's EC2 service page.
