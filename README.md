@@ -5,14 +5,14 @@ Copyright Brian S. Cole, PhD 2017
 See LICENSE in this repository for MIT license details.
 This is free software BUT AWS RESOURCE UTILIZATION WILL BE BILLED TO YOUR ACCOUNT.
 
-##Requirements
+## Requirements
 
 1. An AWS account
 2. A GWAS datset in Plink binary format (BED, BIM, and FAM files) e.g. exported from GenomeStudio
 3. A web browser - any decent netbook, PC, tablet, or even cell phone should work
 4. (Recommended) A PC to upload your data using SSH (You can also transfer by other means incl. S3 or an SFTP pull from the EC2 instance itself).
 
-##Quickstart
+## Quickstart
 
 1. Pull or download this repo to your computer.
 2. Go to the AWS console.
@@ -30,7 +30,7 @@ This is free software BUT AWS RESOURCE UTILIZATION WILL BE BILLED TO YOUR ACCOUN
 14. When you reach the end of the notebook, the final cell should generate download links for you! Run these SFTP commands to grab the cleaned up study, the images, and the CSV file describing the QC pipeline's results.  Optionally you can download the notebook.
 15. IMPORTANT: go to the CloudFormation page and click DELETE STACK. The cloud resources are all securely deleted.
 
-###Pro tips:
+### Pro tips:
 1. You can fork this repo on Github or download it and edit the Notebook to change the order of the cells and/or add/subtract steps to suit your desired workflow.
    The point of using version control for both the notebook and the CloudFormation template is flexibility!
 2. If you're feeling lucky, you can click "Run all cells" in the Jupyter notebook, but only after uploading your data! Follow the notebook down the page as it runs.  I encourage interactive QC (running cells one-by-one) because you can detect quirks in your dataset (e.g. missing gender encodings) and fix them on the fly.
