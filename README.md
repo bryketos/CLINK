@@ -1,8 +1,8 @@
 # CLINK
 Reproducible Cloud-based GWAS QC and Analaysis
 
-Copyright Brian S. Cole, PhD 2017
-See LICENSE in this repository for MIT license details.
+Copyright Brian S. Cole, PhD 2017<br />
+See LICENSE in this repository for MIT license details.<br />
 This is free software BUT AWS RESOURCE UTILIZATION WILL BE BILLED TO YOUR ACCOUNT.
 
 ## Requirements
@@ -32,6 +32,7 @@ This is free software BUT AWS RESOURCE UTILIZATION WILL BE BILLED TO YOUR ACCOUN
 
 ### Pro tips:
 1. You can fork this repo on Github or download it and edit the Notebook to change the order of the cells and/or add/subtract steps to suit your desired workflow.
+
    The point of using version control for both the notebook and the CloudFormation template is flexibility!
 2. If you're feeling lucky, you can click "Run all cells" in the Jupyter notebook, but only after uploading your data! Follow the notebook down the page as it runs.  I encourage interactive QC (running cells one-by-one) because you can detect quirks in your dataset (e.g. missing gender encodings) and fix them on the fly.
 3. Instances smaller than m4.xlarge didn't have enough memory to run some steps like PCA and merging using the dataset I developed the notebook for, but if you have a smaller dataset you might be able to get away with a smaller EC2 instance.
