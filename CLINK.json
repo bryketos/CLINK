@@ -18,8 +18,8 @@
     "EncryptVolume": {
       "Description": "Should your genetic data volume be encrypted? (Recommended)",
       "Type": "String",
-      "Default": "yes",
-      "AllowedValues": ["yes", "no"]
+      "Default": "true",
+      "AllowedValues": ["true", "false"]
     },
     "VolumeSize": {
       "Description": "Size needed for your GWAS data (input and output).",
@@ -101,13 +101,16 @@
       "Type": "AWS::EC2::Instance",
       "Properties": {
         "IamInstanceProfile": {"Ref": "IamInstanceProfile"},
-        "ImageId": "ami-b93648af",
+        "ImageId": "ami-c88db8b3",
         "InstanceType": {"Ref": "ClinkInstanceType"},
         "KeyName": {"Ref": "KeyName"},
         "SecurityGroupIds": [{"Ref": "SecurityGroup"}],
         "SubnetId": {"Ref": "Subnet"},
 	"UserData" : { "Fn::Base64" : { "Fn::Join" : [ "", [
           "#!/bin/bash -v\n",
+	  "mkfs -t ext4 /dev/xvdg\n",
+	  "mount /dev/xvdg /clink",
+	  "echo \"/dev/xvdg /clink ext4 defaults,nofail 0 2\" >> /etc/fstab\n",
 	  "openssl req -x509 -nodes -days 365 -newkey rsa:1024 -keyout /home/ec2-user/certs/clinknb.pem -out /home/ec2-user/certs/clinknb.pem -subj '/C=US/ST=PA/L=Philadelphia/O=NA/CN=upibi.org'\n",
 	  "cd /clink/\n",
 	  "git clone https://github.com/bryketos/CLINK.git\n",
@@ -119,7 +122,7 @@
 	  "sleep 45\n",
 	  "date\n",
 	  "runuser ec2-user -c '/home/ec2-user/anaconda2/bin/jupyter notebook list' | perl -lpe 's/localhost/$ENV{IP}/' | mail -s 'Link to CLINK notebook' ",
-	  {"Ref": "EmailAddy"},
+	  {"Ref": "EmailAddress"},
 	  "\n"
         ]]}} 
       }
@@ -130,22 +133,22 @@
         "AvailabilityZone": {"Fn::GetAtt": ["ClinkServer", "AvailabilityZone"]},
 	"Size": {"Ref": "VolumeSize"},
 	"VolumeType": "gp2",
-	"Encrypted": {"Fn::Equals": [{"Ref": "EncryptVolume"}, "yes"]}
+        "Encrypted": {"Ref": "EncryptVolume"}
       }
     },
     "VolumeAttachment": {
       "Type": "AWS::EC2::VolumeAttachment",
       "Properties": {
-        "Device": "/dev/xvdf",
+        "Device": "/dev/xvdg",
 	"InstanceId": {"Ref": "ClinkServer"},
 	"VolumeId": {"Ref": "Volume"}
       }
-    },
-    "Outputs": {
-      "PublicName": {
-        "Value": {"Fn::GetAtt": ["ClinkServer", "PublicDnsName"]},
-	"Description": "Public DNS name for data upload and/or SSH connection."
-      }
+    }
+  },
+  "Outputs": {
+    "PublicName": {
+      "Value": {"Fn::GetAtt": ["ClinkServer", "PublicDnsName"]},
+      "Description": "Public DNS name for data upload and/or SSH connection."
     }
   }
 }
