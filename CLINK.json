@@ -15,7 +15,20 @@
       "Description": "Select subnet ID to use (or the default)",
       "Type": "AWS::EC2::Subnet::Id"
     },
-    "EmailAddy": {
+    "EncryptVolume": {
+      "Description": "Should your genetic data volume be encrypted? (Recommended)",
+      "Type": "String",
+      "Default": "yes",
+      "AllowedValues": ["yes", "no"]
+    },
+    "VolumeSize": {
+      "Description": "Size needed for your GWAS data (input and output).",
+      "Type": "Number",
+      "Default": 300,
+      "MinValue": 30,
+      "MaxValue": 3000
+    },
+    "EmailAddress": {
       "Description": "Email address to send CLINK notebook link to",
       "Type": "String"
     },
@@ -109,6 +122,29 @@
 	  {"Ref": "EmailAddy"},
 	  "\n"
         ]]}} 
+      }
+    },
+    "Volume": {
+      "Type": "AWS::EC2::Volume",
+      "Properties": {
+        "AvailabilityZone": {"Fn::GetAtt": ["ClinkServer", "AvailabilityZone"]},
+	"Size": {"Ref": "VolumeSize"},
+	"VolumeType": "gp2",
+	"Encrypted": {"Fn::Equals": [{"Ref": "EncryptVolume"}, "yes"]}
+      }
+    },
+    "VolumeAttachment": {
+      "Type": "AWS::EC2::VolumeAttachment",
+      "Properties": {
+        "Device": "/dev/xvdf",
+	"InstanceId": {"Ref": "ClinkServer"},
+	"VolumeId": {"Ref": "Volume"}
+      }
+    },
+    "Outputs": {
+      "PublicName": {
+        "Value": {"Fn::GetAtt": ["ClinkServer", "PublicDnsName"]},
+	"Description": "Public DNS name for data upload and/or SSH connection."
       }
     }
   }
