@@ -113,6 +113,7 @@
 	  "echo \"/dev/xvdg /clink ext4 defaults,nofail 0 2\" >> /etc/fstab\n",
 	  "openssl req -x509 -nodes -days 365 -newkey rsa:1024 -keyout /home/ec2-user/certs/clinknb.pem -out /home/ec2-user/certs/clinknb.pem -subj '/C=US/ST=PA/L=Philadelphia/O=NA/CN=upibi.org'\n",
 	  "cd /clink/\n",
+	  "chown ec2-user -R .\n",
 	  "git clone https://github.com/bryketos/CLINK.git\n",
 	  "runuser ec2-user -c 'source /home/ec2-user/.bash_profile; /home/ec2-user/anaconda2/bin/jupyter notebook &'\n",
 	  "sleep 45\n",
