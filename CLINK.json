@@ -133,7 +133,8 @@
         "AvailabilityZone": {"Fn::GetAtt": ["ClinkServer", "AvailabilityZone"]},
 	"Size": {"Ref": "VolumeSize"},
 	"VolumeType": "gp2",
-        "Encrypted": {"Ref": "EncryptVolume"}
+        "Encrypted": {"Ref": "EncryptVolume"},
+        "DeletionPolicy": "Delete"
       }
     },
     "VolumeAttachment": {
