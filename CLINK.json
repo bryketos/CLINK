@@ -109,6 +109,7 @@
 	"UserData" : { "Fn::Base64" : { "Fn::Join" : [ "", [
           "#!/bin/bash -v\n",
 	  "mkfs -t ext4 /dev/xvdg\n",
+          "mkdir /clink\n",  
 	  "mount /dev/xvdg /clink",
 	  "echo \"/dev/xvdg /clink ext4 defaults,nofail 0 2\" >> /etc/fstab\n",
 	  "openssl req -x509 -nodes -days 365 -newkey rsa:1024 -keyout /home/ec2-user/certs/clinknb.pem -out /home/ec2-user/certs/clinknb.pem -subj '/C=US/ST=PA/L=Philadelphia/O=NA/CN=upibi.org'\n",
