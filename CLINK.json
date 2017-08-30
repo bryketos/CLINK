@@ -22,7 +22,7 @@
       "AllowedValues": ["true", "false"]
     },
     "VolumeSize": {
-      "Description": "Size needed for your GWAS data (input and output).",
+      "Description": "Size needed for your GWAS data (input and output) in GB.",
       "Type": "Number",
       "Default": 300,
       "MinValue": 30,
