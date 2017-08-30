@@ -15,7 +15,7 @@ This is free software BUT AWS RESOURCE UTILIZATION WILL BE BILLED TO YOUR ACCOUN
 ## Quickstart
 
 1. Pull or download this repo to your computer.
-2. Go to the AWS console.
+2. Go to the AWS console. Select the us-east-1 region ("North Virginia")
 3. Select CloudFormation to go to the CloudFormation console.
 4. Upload the CLINK.json template.
 5. Select your desired instance type from the dropdown menu, select a key, select the default VPC and subnet (or an existing VPC and subnet if you have one).
